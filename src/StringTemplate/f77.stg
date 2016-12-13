@@ -1,0 +1,272 @@
+//===--------------------- f77.stg - Fortran77 backend --------------------===//
+//
+//  This files defines the template to generate Fortran77 output using the 
+//  StringTemplate library
+//
+//===----------------------------------------------------------------------===//
+//
+//  Developed by Jagan Jayaraj and Pei-Hung Lin
+//  Copyright 2007-2013, Regents of the University of Minnesota
+//
+//  This file is part of CFDbuilder.
+//
+//  CFDbuilder is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+//
+//  CFDbuilder is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with CFDbuilder.  If not, see <http://www.gnu.org/licenses/>.
+//
+//  Contacts: {jaganj,phlin}@cs.umn.edu, paul@lcse.umn.edu
+//
+//===----------------------------------------------------------------------===//
+
+group f77;
+
+program(prefix,values) ::= "<prefix><values; wrap=\"\n     &\">"
+
+executableUnit(value) ::= "<value>"
+
+mainProgram(p,s) ::= "<p><s>"
+
+functionSubprogram(f,s) ::= "<f><s>"
+
+subroutineSubprogram(s1,s2) ::= "<s1><s2>"
+
+blockdataSubprogram(b,s) ::= "<b><s>"
+
+otherSpecificationStatement(os) ::= "<os>"
+
+executableStatement(es) ::= "<es>"
+
+programStatement(n) ::= "<prefix>program <n><\n>"
+
+functionStatement(prefix,t,n,nl) ::= "<prefix><t> function <n> (<nl>)<\n>"
+
+blockdataStatement(prefix,n) ::= "<prefix>block <n><\n>"
+
+subroutineStatement(prefix,n,nl) ::= "<prefix>subroutine <n>(<nl>)<\n>"
+
+namelist(values) ::= "<values;wrap=\"\n     &\",separator=\", \">"
+
+//statement(s) ::= "<s><\n>"
+
+subprogramBody(d,e) ::= "<d><\n><e>      end<\n>"
+
+declarationBlock(d) ::= "<d:{a |<a>}>"
+
+executionBlock(w) ::= "<w:{a |<a>}>"
+
+declarationStatement(prefix,s) ::= "<prefix><s>"
+
+wholeStatement(prefix,s) ::= "<prefix><s>"
+
+endStatement(prefix,l,c) ::= "<l><prefix>end<\n><c>"
+
+dimensionStatement(av) ::= "<av:{a |       dimension <a><\n>}>"
+
+allocatableStatement(ev) ::= "<ev:{e |       allocatable <e><\n>}>"
+
+entityList(a,d) ::= "<a><d>"
+
+deferredShapeSpecList(cv) ::= "(<cv;wrap=\"\n     &\", separator=\",\">)"
+
+allocateStatement(av) ::= "<av:{a |       allocate (<a>)<\n>}>"
+
+arrayDeclarator(n,value) ::= "<n; wrap=\"\n     &\">(<value; wrap=\"\n     &\">)"
+
+arrayDeclaratorExtents(values) ::=  "<values;  wrap=\"\n     &\",separator=\", \">"
+
+arrayDeclaratorExtent(i1,column,i2) ::= "<i1;  wrap=\"\n     &\"><column;  wrap=\"\n     &\"><i2;  wrap=\"\n     &\">"
+
+equivalenceStatement(ev) ::= "equivalence <ev;wrap=\"\n     &\", separator=\", \"><\n>"
+
+equivEntityGroup(ev) ::=  "(<ev;wrap=\"\n     &\", separator=\", \">)"
+
+commonStatement(cv) ::=  "common <cv;wrap=\"\n     &\",separator=\", \"><\n>"
+
+commonName(cv) ::= "/<cv>/"
+
+commonItem(c) ::= "<c; wrap=\"\n     &\">"
+
+commonItems(cv) ::= "<cv; wrap=\"\n     &\", separator=\", \">"
+
+commonBlock(cn,ci) ::= "<cn>  <ci; wrap=\"\n     &\">"
+
+dataStatement(cv) ::=  "data <cv;wrap=\"\n     &\",separator=\", \"><\n>"
+
+dataBlock(cn,ci) ::= "<cn>/<ci; wrap=\"\n     &\">/"
+
+typeStatement(t,tnl) ::= "<t>  <tnl; wrap=\"\n     &\"><\n>"
+
+typeStatementNameList(tv) ::= "<tv;wrap=\"\n     &\", separator=\", \">"
+
+typeStatementName(t) ::= "<t>"
+
+typeStatementLenSpec(l) ::= "*<l>"
+
+typename(t) ::= "<t>"
+
+type(tn,tl) ::="<tn><tl>"
+
+typenameLen(s,l) ::= "<s><l>"
+
+includeStatement(s) ::= "include  <s><\n>"
+
+implicitStatement(i) ::= "implicit <i><\n>"
+
+implicitSpec(t,i) ::= "<t>  (<i>)"
+
+implicitSpecs(iv) ::= "<iv;wrap=\"\n     &\", separator=\", \">"
+
+implicitNone() ::= "none"
+
+implicitLetter(l) ::= "<l>"
+
+implicitRange(i1,m,i2) ::= "<i1> - <i2>"
+
+implicitLetters(iv) ::= "<iv;wrap=\"\n     &\", separator=\", \">"
+
+lenSpecification(l) ::= "<l>"
+
+useStatement(n) ::= "use <n><\n>"
+
+parameterStatement(p) ::= "parameter (<p;wrap=\"\n     &\">)<\n>"
+
+paramlist(pv) ::= "<pv;wrap=\"\n     &\", separator=\", \">" 
+
+paramassign(n,a,e) ::= "<n><a><e;wrap=\"\n     &\">"
+
+externalStatement(n) ::= "external  <n><\n>" 
+
+intrinsicStatement(n) ::= "intrinsic  <n><\n>"
+
+saveStatement(sv) ::= "save  <sv; wrap=\"\n     &\", separator=\", \"><\n>"
+
+saveEntity(sv) ::= "<sv>"
+
+volatileStatement(sv) ::= "volatile  <sv; wrap=\"\n     &\", separator=\", \"><\n>"
+
+assignmentStatement(vr,e) ::= "<vr>=<e;wrap=\"\n     &\"><\n>"
+
+assignmentStatementSpl(i,vn) ::= "assign <i> to <vn>"
+
+gotoStatement(g) ::= "goto <g><\n>" 
+
+unconditionalGoto(l,c) ::= "<l><\n><c>"
+
+lblRef(l) ::= "<l>"
+
+labelList(lv) ::= "(<lv;wrap=\"\n     &\", separator=\", \">)"
+
+assignedGoto(n,l) ::= "<n><l>"
+
+ifStatement(e,b,l) ::= "if (<e; wrap=\"\n     &\">) <b; wrap=\"\n     &\"><l; wrap=\"\n     &\">"
+
+logicalIfStatement(e) ::= "<e; wrap=\"\n     &\"><\n>"
+
+blockIfStatement(f,eiv,es) ::= "<f><eiv><es>      endif<\n>"
+
+firstIfBlock(w) ::= "then<\n><w>"
+
+elseIfStatement(e,wv) ::= "      elseif (<e>) then<\n><wv>"
+
+elseStatement(wv) ::= "      else<\n><wv>"
+
+doStatement(dl,de) ::= "do <dl><de><\n>"
+
+doVarArgs(i,e1,e2,e3) ::= "<i>=<e1>,<e2>,<e3>"
+
+doWithLabel(l,d,dd,c) ::= "<l> <d><\n><dd><l>     continue<\n><c>"
+
+doBody(wv) ::= "<wv>"
+
+doWithEndDo(d,db) ::= "<d><\n><db>      enddo"
+
+continueStatement(l,c) ::= "<l>     continue<\n><c>"
+
+stopStatement(i) ::= "stop <i><\n>"
+
+pauseStatement(i) ::= "pause <i><\n>"
+
+iocontrolArgs(a,b) ::= "(<a><b>)"
+
+writeStatement(i,n) ::= "write<i> <n;wrap=\"\n     &\"><\n>"
+
+readStatement(i,n) ::= "read<i> <n;wrap=\"\n     &\"><\n>"
+
+printStatement(n) ::= "print<n;wrap=\"\n     &\"><\n>"
+
+openStatement(n) ::= "open<n;wrap=\"\n     &\"><\n>"
+
+closeStatement(n) ::= "close<n><\n>"
+
+inquireStatement(n) ::= "inquire<n><\n>"
+
+backspaceStatement(n) ::= "backspace<n><\n>"
+
+endfileStatement(n) ::= "endfile<n><\n>"
+
+rewindStatement(n) ::= "rewind<n><\n>"
+
+formatStatement(n,l,c) ::= "<l>     format<n;wrap=\"\n     &\"><\n><c>"
+
+statementFunctionStatement(n) ::= "let <n><\n>"
+
+functionReference(f1,f2) ::= "<f1><f2>"
+
+functionArgumentList(f) ::= "(<f;wrap=\"\n     &\", separator=\",\">)"
+
+functionArgument(e) ::= "<e>"
+
+callStatement(s) ::= "call <s><\n>"
+
+subroutineCall(n,c) ::= "<n>(<c>)"
+
+callArgumentList(cv) ::=  "<cv;wrap=\"\n     &\", separator=\",\">"
+
+callArgument(e) ::= "<e>"
+
+returnStatement(i) ::= "return <i><\n>"
+
+expressionuac(uac) ::= "<uac;wrap=\"\n     &\">"
+
+expressionvr(vr) ::= "<vr;wrap=\"\n     &\">"
+
+expressionfunc(f) ::= "<f;wrap=\"\n     &\">"
+
+expression(op,e1,e2) ::= "(<e1; wrap=\"\n     &\"> <op;wrap=\"\n     &\"> <e2; wrap=\"\n     &\">)"
+
+madd(op,e1,e2,e3) ::= "((<e1; wrap=\"\n     &\"> * <e2; wrap=\"\n     &\">) <op;wrap=\"\n     &\"> <e3; wrap=\"\n     &\">)"
+
+msub(op,e1,e2,e3) ::= "((<e1; wrap=\"\n     &\"> * <e2; wrap=\"\n     &\">) <op;wrap=\"\n     &\"> <e3; wrap=\"\n     &\">)"
+
+negvar(e1) ::="(-<e1>)"
+
+arrayElementName(n,iv) ::= "<n; wrap=\"\n     &\">(<iv;wrap=\"\n     &\", separator=\",\">)"
+
+subscripts(ev) ::= "(<ev;wrap=\"\n     &\", separator=\",\">)"
+
+varRef(n,s) ::= "<n;wrap=\"\n     &\"><s;wrap=\"\n     &\">"
+
+arrayName(n) ::= "<n; wrap=\"\n     &\">"
+
+subroutineName(n) ::= "<n>"
+
+functionName(n) ::= "<n>"
+
+unsignedArithmeticConstant(u) ::= "<u;wrap=\"\n     &\">"
+
+logicalConstant(l) ::= "<l;wrap=\"\n     &\">"
+
+identifier(i) ::= "<i;wrap=\"\n     &\">"
+
+directives(d,n) ::= "<d> <n;separator=\" \"><\n>"
+
+stringconstant(s) ::= "<s;wrap=\"\n     &\">"

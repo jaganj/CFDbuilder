@@ -1,0 +1,299 @@
+//===-------------------- AltiVec.stg - AltiVec backend -------------------===//
+//
+//  This files defines the template to generate the AltiVec instruction set 
+//  output using the StringTemplate library
+//
+//===----------------------------------------------------------------------===//
+//
+//  Developed by Jagan Jayaraj and Pei-Hung Lin
+//  Copyright 2007-2013, Regents of the University of Minnesota
+//
+//  This file is part of CFDbuilder.
+//
+//  CFDbuilder is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+//
+//  CFDbuilder is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with CFDbuilder.  If not, see <http://www.gnu.org/licenses/>.
+//
+//  Contacts: {jaganj,phlin}@cs.umn.edu, paul@lcse.umn.edu
+//
+//===----------------------------------------------------------------------===//
+
+group f77;
+
+program(prefix,values) ::= 
+"#define vec_sqrt(a) vec_re(vec_rsqrte(a))
+<prefix><values; wrap=\"\n     &\">"
+
+executableUnit(value) ::= "<value>"
+
+mainProgram(p,s) ::= "<p><s>"
+
+functionSubprogram(f,s) ::= "<f><s>"
+
+subroutineSubprogram(s1,s2) ::= "<s1><s2>"
+
+blockdataSubprogram(b,s) ::= "<b><s>"
+
+otherSpecificationStatement(os) ::= "<os>"
+
+executableStatement(es) ::= "<es>"
+
+programStatement(n) ::= "<prefix>program <n><\n>"
+
+functionStatement(prefix,t,n,nl) ::= "<prefix><t> function <n> (<nl>)<\n>"
+
+blockdataStatement(prefix,n) ::= "<prefix>block <n><\n>"
+
+subroutineStatement(prefix,n,nl) ::= "<prefix>subroutine <n>(<nl>)<\n>"
+
+namelist(values) ::= "<values;wrap=\"\n     &\",separator=\", \">"
+
+//statement(s) ::= "<s><\n>"
+
+subprogramBody(d,e) ::= "<d>c     Finish Declaration<\n><e>      end<\n>"
+
+declarationBlock(d,vec) ::= "<d:{a |<a>}><vec:{b |<b>}>"
+
+executionBlock(w) ::= "<w:{a |<a>}>"
+
+declarationStatement(prefix,s) ::= "<prefix><s>"
+
+wholeStatement(prefix,s) ::= "<prefix><s>"
+
+endStatement(prefix,l,c) ::= "<l><prefix>end<\n><c>"
+
+//dimensionStatement(av) ::= "<av:{a |       dimension <a><\n>}>"
+
+dimensionStatement(type,av) ::= "<type,av:{a,b|       <a> <b><\n>}>"
+
+allocatableStatement(ev) ::= "<ev:{e |       allocatable <e><\n>}>"
+
+entityList(a,d) ::= "<a><d>"
+
+deferredShapeSpecList(cv) ::= "(<cv;wrap=\"\n     &\", separator=\",\">)"
+
+allocateStatement(av) ::= "<av:{a |       allocate (<a>)<\n>}>"
+
+arrayDeclarator(n,value) ::= "<n; wrap=\"\n     &\">(<value; wrap=\"\n     &\">)"
+
+arrayDeclaratorExtents(v1,separator,values) ::=  "<v1><separator><values;  wrap=\"\n     &\",separator=\", \">"
+
+arrayDeclaratorExtent(i1,column,i2) ::= "<i1;  wrap=\"\n     &\"><column;  wrap=\"\n     &\"><i2;  wrap=\"\n     &\">"
+
+equivalenceStatement(ev) ::= "equivalence <ev;wrap=\"\n     &\", separator=\", \"><\n>"
+
+equivEntityGroup(ev) ::=  "(<ev;wrap=\"\n     &\", separator=\", \">)"
+
+commonStatement(cv) ::=  "common <cv;wrap=\"\n     &\",separator=\", \"><\n>"
+
+commonName(cv) ::= "/<cv>/"
+
+commonItem(c) ::= "<c; wrap=\"\n     &\">"
+
+commonItems(cv) ::= "<cv; wrap=\"\n     &\", separator=\", \">"
+
+commonBlock(cn,ci) ::= "<cn>  <ci; wrap=\"\n     &\">"
+
+dataStatement(cv) ::=  "data <cv;wrap=\"\n     &\",separator=\", \"><\n>"
+
+dataBlock(cn,ci) ::= "<cn>/<ci; wrap=\"\n     &\">/"
+
+typeStatement(t,tnl) ::= "<tnl; wrap=\"\n     &\"><\n>"
+
+typeStatementNameList(tv) ::= "<tv;wrap=\"\n     &\", separator=\"\n      \">"
+
+typeStatementName(type,t) ::= "<type> <t>"
+
+typeStatementLenSpec(l) ::= "*<l>"
+
+typename(t) ::= "<t>"
+
+type(tn,tl) ::="<tn><tl>"
+
+typenameLen(s,l) ::= "<s><l>"
+
+includeStatement(s) ::= "include  <s><\n>"
+
+implicitStatement(i) ::= "implicit <i><\n>"
+
+implicitSpec(t,i) ::= "<t>  (<i>)"
+
+implicitSpecs(iv) ::= "<iv;wrap=\"\n     &\", separator=\", \">"
+
+implicitNone() ::= "none"
+
+implicitLetter(l) ::= "<l>"
+
+implicitRange(i1,m,i2) ::= "<i1> - <i2>"
+
+implicitLetters(iv) ::= "<iv;wrap=\"\n     &\", separator=\", \">"
+
+lenSpecification(l) ::= "<l>"
+
+useStatement(n) ::= "use <n><\n>"
+
+parameterStatement(p) ::= "parameter (<p;wrap=\"\n     &\">)<\n>"
+
+paramlist(pv) ::= "<pv;wrap=\"\n     &\", separator=\", \">" 
+
+paramassign(n,a,e) ::= "<n><a><e;wrap=\"\n     &\">"
+
+externalStatement(n) ::= "external  <n><\n>" 
+
+intrinsicStatement(n) ::= "intrinsic  <n><\n>"
+
+saveStatement(sv) ::= "save  <sv; wrap=\"\n     &\", separator=\", \"><\n>"
+
+saveEntity(sv) ::= "<sv>"
+
+//assignmentStatement(vr,e) ::= "<vr> = <e;wrap=\"\n     &\"><\n>"
+
+//assignmentStatementNonVector(vr,e,eadj,eapp) ::= "<vr> = <eadj;wrap=\"\n     &\"><e;wrap=\"\n     &\"><eapp><\n>"
+
+//assignmentStatement(vr,e,eadj,eapp) ::= "<vr> = <eadj;wrap=\"\n     &\"><e;wrap=\"\n     &\"><eapp><\n>"
+
+assignmentStatement(vr,e,eadj) ::= "<vr> = <if(eadj)><eadj;wrap=\"\n     &\">(<endif><e;wrap=\"\n     &\"><if(eadj)>)<endif><\n>"
+
+//DMALdSt(isSt,vr,offset,e,eadj) ::= "<if(!isSt)><vr> = <endif><if(eadj)><eadj;wrap=\"\n     &\">(<endif><if(isSt)><vr;wrap=\"\n     &\">,<endif><if(offset)><offset;wrap=\"\n     &\">,<endif><e;wrap=\"\n     &\"><if(eadj)>)<endif><\n>"
+DMALdSt(isSt,vr,offset,e,eadj) ::= "<if(!isSt)><vr> = <if(eadj)><eadj;wrap=\"\n     &\">(<endif><if(offset)><offset;wrap=\"\n     &\">,<endif><e;wrap=\"\n     &\"><if(eadj)>)<endif><\n><else><eadj;wrap=\"\n     &\">(<e;wrap=\"\n     &\">,<offset;wrap=\"\n     &\">,<vr;wrap=\"\n     &\">)<\n><endif>"
+
+assignmentvecsel(left,right0,right1) ::= "<left> = vec_sel(<right0>,<right1>,tpatt)"
+
+assignmentStatementSpl(i,vn) ::= "assign <i> to <vn>"
+
+gotoStatement(g) ::= "goto <g><\n>" 
+
+unconditionalGoto(l,c) ::= "<l><\n><c>"
+
+lblRef(l) ::= "<l>"
+
+labelList(lv) ::= "(<lv;wrap=\"\n     &\", separator=\", \">)"
+
+assignedGoto(n,l) ::= "<n><l>"
+
+ifStatement(e,b,l) ::= "if (<e; wrap=\"\n     &\">) <b; wrap=\"\n     &\"><l; wrap=\"\n     &\">"
+
+cvmgms(e,b) ::= "<e; wrap=\"\n     &\"><\n>      <b; wrap=\"\n     &\">"
+
+logicalIfStatement(e) ::= "<e; wrap=\"\n     &\"><\n>"
+
+blockIfStatement(f,eiv,es) ::= "<f><eiv><es>      endif<\n>"
+
+firstIfBlock(w) ::= "then<\n><w>"
+
+cvmgmsfirstIfBlock(w) ::= "<w>"
+
+elseIfStatement(e,wv) ::= "      elseif (<e>) then<\n><wv>"
+
+elseStatement(wv) ::= "      else<\n><wv>"
+
+doStatement(dl,de) ::= "do <dl><de><\n>"
+
+doVarArgs(i,e1,e2,e3,adj) ::= "<i>=<e1>,<e2><adj>,<e3>"
+
+doWithLabel(l,d,dd,c) ::= "<l> <d><\n><dd><l>     continue<\n><c>"
+
+doBody(wv) ::= "<wv>"
+
+doWithEndDo(d,db) ::= "<d><\n><db>      enddo"
+
+continueStatement(l,c) ::= "<l>     continue<\n><c>"
+
+stopStatement(i) ::= "stop <i><\n>"
+
+pauseStatement(i) ::= "pause <i><\n>"
+
+iocontrolArgs(a,b) ::= "(<a><b>)"
+
+writeStatement(i,n) ::= "write<i> <n;wrap=\"\n     &\"><\n>"
+
+readStatement(i,n) ::= "read<i> <n;wrap=\"\n     &\"><\n>"
+
+printStatement(n) ::= "print<n;wrap=\"\n     &\"><\n>"
+
+openStatement(n) ::= "open<n;wrap=\"\n     &\"><\n>"
+
+closeStatement(n) ::= "close<n><\n>"
+
+inquireStatement(n) ::= "inquire<n><\n>"
+
+backspaceStatement(n) ::= "backspace<n><\n>"
+
+endfileStatement(n) ::= "endfile<n><\n>"
+
+rewindStatement(n) ::= "rewind<n><\n>"
+
+formatStatement(n,l,c) ::= "<l>     format<n;wrap=\"\n     &\"><\n><c>"
+
+statementFunctionStatement(n) ::= "let <n><\n>"
+
+functionReference(f1,f2) ::= "<f1><f2>"
+
+functionArgumentList(f) ::= "(<f;wrap=\"\n     &\", separator=\",\">)"
+
+functionArgument(e) ::= "<e>"
+
+callStatement(s) ::= "call <s><\n>"
+
+subroutineCall(n,c) ::= "<n>(<c>)"
+
+callArgumentList(cv) ::=  "<cv;wrap=\"\n     &\", separator=\",\">"
+
+callArgument(e) ::= "<e>"
+
+returnStatement(i) ::= "return <i><\n>"
+
+expressionuac(uac) ::= "<uac;wrap=\"\n     &\">"
+
+expressionvr(vr) ::= "<vr;wrap=\"\n     &\">"
+
+expressionfunc(f) ::= "<f;wrap=\"\n     &\">"
+
+expression(op,e1,e2) ::= "(<e1; wrap=\"\n     &\"> <op;wrap=\"\n     &\"> <e2; wrap=\"\n     &\">)"
+
+madd(op,e1,e2,e3) ::= "((<e1; wrap=\"\n     &\"> * <e2; wrap=\"\n     &\">) <op;wrap=\"\n     &\"> <e3; wrap=\"\n     &\">)"
+
+expressionvec(op,e1,e2) ::= "(<op; wrap=\"\n     &\">(<e1;wrap=\"\n     &\">,<e2; wrap=\"\n     &\">))"
+
+maddvec(op,e1,e2,e3) ::= "(<op; wrap=\"\n     &\">(<e1;wrap=\"\n     &\">,<e2; wrap=\"\n     &\">,<e3;wrap=\"\n     &\">))"
+
+msubvec(op,e1,e2,e3) ::= "(<op; wrap=\"\n     &\">(<e1;wrap=\"\n     &\">,<e2; wrap=\"\n     &\">,<e3;wrap=\"\n     &\">))"
+
+cmpexprvec(op,e1,e2) ::= "tpatt=<op; wrap=\"\n     &\">(<e1; wrap=\"\n     &\">,<e2; wrap=\"\n     &\">)"
+
+negvar(e1) ::="(-<e1>)"
+
+negvarvec(op,e1) ::="(<op>(<e1>))"
+
+vecpow(a1,a2) ::= "(vec_expte(vec_mul(vec_loge(<a1>),<a2>)))"
+
+arrayElementName(n,iv) ::= "<n; wrap=\"\n     &\">(<iv;wrap=\"\n     &\", separator=\",\">)"
+
+subscripts(ev) ::= "(<ev;wrap=\"\n     &\", separator=\",\">)"
+
+varRef(doSpalt,n,s) ::= "<if(doSplat)>vec_splats(<endif><n;wrap=\"\n     &\"><s;wrap=\"\n     &\"><if(doSplat)>)<endif>"
+
+arrayName(n) ::= "<n; wrap=\"\n     &\">"
+
+subroutineName(n) ::= "<n>"
+
+functionName(n) ::= "<n>"
+
+unsignedArithmeticConstant(u) ::= "<u;wrap=\"\n     &\">"
+
+logicalConstant(l) ::= "<l;wrap=\"\n     &\">"
+
+identifier(i) ::= "<i;wrap=\"\n     &\">"
+
+directives(d,n) ::= "<d> <n;separator=\" \"><\n>"
+
+stringconstant(s) ::= "<s;wrap=\"\n     &\">"

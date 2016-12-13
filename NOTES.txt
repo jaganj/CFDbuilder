@@ -1,0 +1,140 @@
+﻿Please refer to INSTALL.txt for instructions to build and run CFDbuilder.
+Please refer to [1], [2], [3], [4], and [5] for documentation on 
+CFDbuilder. Here we discuss some implementation issues.
+
+==------------------------------------------------==
+Brief description of the CFDbuilder front-end passes
+==------------------------------------------------==
+Init
+----
+1. Create symbol table
+2. Rename labels to help us to with the generation of new labels in the
+   later passes
+3. Create special tokens for our PPM directives
+
+Pipeline
+--------
+1. Pass 1: Eliminate redundant iterations
+2. Inline
+3. Pass 2: repack
+4. Simplify subscripts
+5. Pass 3: Double Buffer
+6. Pass 4: longitudinal doLoop to if
+7. Pass 5: reduce memory of temporaries
+8. Pass 6: loop over planes (for pipelining)
+9. Simplify subscripts again
+
+Please refer to the docs and comments in the code for more on the 
+individual passes themselves
+
+
+==----------==
+Reserved words: nsugar, nghostcubes, nbdy, mynx, iplane, icube
+==----------==
+
+==-----------==
+ANTLR v3 issues
+==-----------==
+ i. Removing a node and attaching all it’s children to another node is
+    difficult in ANTLR.  Right now, we are duplicating the sub-tree at
+    the destination and then deleting the source sub-tree.
+ii. Inserting nodes into a tree is not possible in ANTLR.  You can 
+    delete, replace, or add nodes at the end.  Note, deletion only works
+    for a full grammar, and not for pattern-matching grammars.  
+    See item iv.
+iii. Semantic predicates not working as expected. (Note taken from 
+    the comment on implementing “continue” statement in parser for a
+    continue in a do loop and a normal continue statement.)
+iv.	Pattern matching ANTLRs are very elegant, but seems to be very 
+    error-prone.  Adding statements (nodes/children) seems to work, but
+    deletion does not.  TreeVisitor visit method gets all confused.  
+    I performed a whole bunch of experiments from deleting statements in
+    the reverse order to getting child index at the time of deletion.  
+    The conclusion is deletion does not work with pattern matching 
+    grammars.  It forces us to use the more clumsy tree grammars, but they
+    work.
+v.	We cannot link a token against a symbol in the symboltable if we 
+    create trees directly using ANTLR syntax.  Most often, we need to
+    explicitly construct the trees in the Java actions.  
+
+==------==
+Time sinks
+==------==
+  As of 05/14/2012
+i.	Parser
+    ------
+    a. continuation statements in Fortran. Resorting to Java 
+       preprocessing.
+    b. labels and comments.  Resorting to Java code to delete all the 
+       comments. 
+    c. The original Fortran do statements used labels to mark the end of 
+       the loops.  The last statement (the statement with the label) of
+       the do loop does not have to be a continue statement.  It could 
+       be anything, except a few control constructs such as goto.  
+       For all practical purposes, we assume the continue statement to 
+       be used to end the do loops. 
+    d. There are no keywords in Fortran.  We introduced keywords such as
+       Block.  They can no longer be used as variables. 
+ii.	Symbol table
+    ------------
+    a. Understanding the structure of the symbol table or equivalent data 
+       structure.
+iii. Inlining
+     --------
+    a. Dimension maps and adjust offsets.
+    b. Removing redundant definitions
+    c. Retaining names for the non-arguments. Need to know if a variable
+       is an argument or not.
+    d. If types do not match between caller and callee, create 
+       equivalences.
+    e. Scopes of the definition blocks should be easily accessible and
+       apparent.
+iv.	Set equivalences and has equivalences
+    -------------------------------------
+    a. Setting equivalences.  Who is equivalent to who?  We do not want 
+       circular references.  The array with the biggest size becomes the
+       primary array.  Negative offsets are disallowed in equivalences
+       ie. a smaller object cannot start from a negative offset of a 
+       larger object.
+ 
+
+==--------------------------------==
+Needs for successful transformation:
+==--------------------------------==
+  i. Able to parse comments to recognize the annotations
+ ii. Able to create new tokens
+iii. Able to manipulate trees (or manipulate statements)
+  a. convert from one token type to another
+  b. add and delete nodes
+  c. change trees to intermediate forms which are not valid. (eg: ldoloop)
+iv. Able to create new unique labels
+ v. Remember upper and lower bounds of all the Fortran dimensions of all the variables.
+vi. Inliner:
+  a. Able to access the symbol tables of both the caller and the callee
+  b. Retain the call side names for all the arguments.
+  c. Able to change the subscripts of the inlined variables
+  
+
+==------==
+References
+==------==
+[1] J. Jayaraj, P.-H. Lin, P. R. Woodward,  and P.-C. Yew, "CFD Builder:
+A Library Builder for Computational Fluid Dynamics," 2014 IEEE 
+International Parallel & Distributed Processing Symposium Workshops, 
+Phoenix, AZ, 2014, pp. 1029-1038.
+
+[2] J. Jayaraj, “A strategy for high performance in computational fluid
+dynamics,” Ph.D. dissertation, University of Minnesota, August 2013.
+
+[3] P.-H. Lin, “Performance portability strategies for computational fluid
+dynamics (CFD) applications on HPC systems,” Ph.D. dissertation,
+University of Minnesota, June 2013.
+
+[4] P. R. Woodward, J. Jayaraj, P.-H. Lin, and P.-C. Yew, “Moving scientific
+codes to multicore microprocessor cpus,” Computing in Science and
+Engineering, vol. 10, no. 6, pp. 16–25, 2008.
+
+[5] P. R. Woodward, J. Jayaraj, P.-H. Lin, and W. Dai, “First experience
+of compressible gas dynamics simulation on the los alamos roadrunner
+machine,” Concurr. Comput. : Pract. Exper., vol. 21, no. 17, pp. 2160–
+2175, Dec. 2009.

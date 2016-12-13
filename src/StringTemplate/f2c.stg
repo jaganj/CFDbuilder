@@ -1,0 +1,276 @@
+//===------------------------ f2c.stg - C backend  ------------------------===//
+//
+//  This files defines the template to generate C code using the StringTemplate 
+//  library
+//
+//===----------------------------------------------------------------------===//
+//
+//  Developed by Jagan Jayaraj and Pei-Hung Lin
+//  Copyright 2007-2013, Regents of the University of Minnesota
+//
+//  This file is part of CFDbuilder.
+//
+//  CFDbuilder is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+//
+//  CFDbuilder is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with CFDbuilder.  If not, see <http://www.gnu.org/licenses/>.
+//
+//  Contacts: {jaganj,phlin}@cs.umn.edu, paul@lcse.umn.edu
+//
+//===----------------------------------------------------------------------===//
+
+group f2c;
+
+program(values) ::= 
+"/*include files*/
+#include \<sys/time.h\>
+#include \<stdio.h\>
+#define min(x,y) ((x)\<(y) ? (x):(y))
+#define max(x,y) ((x)\>(y) ? (x):(y))
+<values>"
+
+executableUnit(value) ::= "<value>"
+
+mainProgram(p,s) ::= "<p><s>"
+
+functionSubprogram(f,s) ::= "<f><s>"
+
+subroutineSubprogram(s1,s2) ::= "<s1><s2>"
+
+blockdataSubprogram(b,s) ::= "<b><s>"
+
+otherSpecificationStatement(os) ::= "<os>"
+
+executableStatement(es) ::= "<es>"
+
+programStatement(n) ::= "int main(){//<n><\n>"
+
+functionStatement(t,n,nl) ::= "<t> function <n> (<nl>)<\n>"
+
+blockdataStatement(n) ::= "block <n><\n>"
+
+subroutineStatement(n,nl) ::= "int <n>(<nl>){"
+
+namelist(values) ::= "<values;separator=\", \">"
+
+//statement(s) ::= "<s><\n>"
+
+subprogramBody(decl,d,e) ::= "<decl><\n><d><\n><e>}<\n>"
+
+declarationBlock(d) ::= "<d>"
+
+executionBlock(w) ::= "<w>"
+
+declarationStatement(s) ::= "<s><\n>"
+
+wholeStatement(s) ::= "<s><\n>"
+
+endStatement(l,c) ::= "<l>}<\n><c>"
+
+dimensionStatement(av) ::= "/*<\n><av:{a |dimension <a><\n>}>*/"
+
+allocatableStatement(ev) ::= "/*<\n><ev:{e |allocatable <e><\n>}>*/"
+
+entityList(a,d) ::= "<a><d>"
+
+deferredShapeSpecList(cv) ::= "(<cv; separator=\",\">)"
+
+allocateStatement(av) ::= "/*<\n><av:{a |allocate (<a>)<\n>}>*/"
+
+arrayDeclarator(n,value) ::= "<n>(<value>)"
+
+arrayDeclaratorExtents(values) ::=  "<values;separator=\", \">"
+
+arrayDeclaratorExtent(i1,column,i2) ::= "<i1><column><i2>"
+
+equivalenceStatement(ev) ::= "/*equivalence <ev; separator=\", \">*/"
+
+equivEntityGroup(ev) ::=  "(<ev; separator=\", \">)"
+
+commonStatement(cv) ::=  "//common <cv;separator=\", \">"
+
+commonName(cv) ::= "/<cv>/"
+
+commonItem(c) ::= "<c>"
+
+commonItems(cv) ::= "<cv; separator=\", \">"
+
+commonBlock(cn,ci) ::= "<cn>  <ci>"
+
+dataStatement(cv) ::=  "//data <cv;wrap=\"\n     &\",separator=\", \"><\n>"
+
+dataBlock(cn,ci) ::= "<cn>/<ci; wrap=\"\n     &\">/"
+
+typeStatement(t,tnl) ::= "//<t>  <tnl>"
+
+typeStatementNameList(tv) ::= "<tv;separator=\", \">"
+
+typeStatementName(t) ::= "<t>"
+
+typeStatementLenSpec(l) ::= "*<l>"
+
+typename(t) ::= "<t>"
+
+type(tn,tl) ::="<tn><tl>"
+
+typenameLen(s,l) ::= "<s><l>"
+
+includeStatement(s) ::= "/*C Translator won't translate includeStatement!<\n>include  <s><\n>*/"
+
+implicitStatement(i) ::= "/*C Translator won't translate implicitStatement!<\n>implicit <i><\n>*/"
+
+implicitSpec(t,i) ::= "<t>  (<i>)"
+
+implicitSpecs(iv) ::= "<iv; separator=\", \">"
+
+implicitNone() ::= "none"
+
+implicitLetter(l) ::= "<l>"
+
+implicitRange(i1,m,i2) ::= "<i1> - <i2>"
+
+implicitLetters(iv) ::= "<iv;separator=\", \">"
+
+lenSpecification(l) ::= "<l>"
+
+useStatement(n) ::= "/*C Translator won't translate implicitStatement!<\n>use <n><\n>*/"
+
+parameterStatement(p) ::= "/*Parameter value is stored in symbol table!<\n>parameter (<p>)<\n>*/"
+
+paramlist(pv) ::= "<pv; separator=\", \">" 
+
+paramassign(n,a,e) ::= "<n><a><e>"
+
+externalStatement(n) ::= "//external  <n>" 
+
+intrinsicStatement(n) ::= "/*intrinsic  <n>*/"
+
+saveStatement(sv) ::= "/*save  <sv;separator=\", \">*/"
+
+saveEntity(sv) ::= "<sv>"
+
+assignmentStatement(vr,e) ::= "<vr>=<e>;"
+
+assignmentStatementSpl(i,vn) ::= "assign <i> to <vn>"
+
+gotoStatement(g) ::= "goto L<g>;" 
+
+unconditionalGoto(l) ::= "<l>"
+
+lblRef(l) ::= "<l>"
+
+labelList(lv) ::= "(<lv; separator=\", \">)"
+
+assignedGoto(n,l) ::= "<n><l>"
+
+ifStatement(e,b,l) ::= "if (<e>) <b><l>"
+
+logicalIfStatement(e) ::= "<e>"
+
+blockIfStatement(f,eiv,es) ::= "<f><eiv><es>}"
+
+firstIfBlock(w) ::= "{<\n><w>"
+
+elseIfStatement(e,wv) ::= "}else if (<e>) {<\n><wv>"
+
+elseStatement(wv) ::= "}else{<\n><wv>"
+
+doStatement(dl,de) ::= "for <dl><de>"
+
+doVarArgs(i,e1,e2,e3) ::= "(<i>=<e1>;<i>\<=<e2>;<i>=<i>+<e3>){"
+
+doWithLabel(l,d,dd,c) ::= "<d><\n><dd>L<l>: ;<\n>}//continue<\n><c>"
+
+doBody(wv) ::= "<wv>"
+
+doWithEndDo(d,db) ::= "<d><\n><db>}"
+
+continueStatement(l,c) ::= "L<l>;//continue<\n><c>"
+
+stopStatement(i) ::= "exit(<if(i)><i><else>0<endif>);//stop <i>"
+
+pauseStatement(i) ::= "//Translator won't translate pauseStatement : pause <i>"
+
+iocontrolArgs(a,b) ::= "(<a><b>)"
+
+writeStatement(i,n) ::= "/*C Translator won't translate I/O<\n>write<i> <n><\n>*/"
+
+readStatement(i,n) ::= "/*C Translator won't translate I/O<\n>read<i> <n><\n>*/"
+
+printStatement(n) ::= "/*C Translator won't translate I/O<\n>print<n><\n>*/"
+
+openStatement(n) ::= "/*C Translator won't translate I/O<\n>open<n><\n>*/"
+
+closeStatement(n) ::= "/*C Translator won't translate I/O<\n>close<n><\n>*/"
+
+inquireStatement(n) ::= "/*C Translator won't translate inquireStatement<\n>inquire<n><\n>*/"
+
+backspaceStatement(n) ::= "/*C Translator won't translate backspaceStatement<\n>backspace<n><\n>*/"
+
+endfileStatement(n) ::= "/*C Translator won't translate endfileStatement<\n>endfile<n><\n>*/"
+
+rewindStatement(n) ::= "/*C Translator won't translate rewindStatement<\n>rewind<n><\n>*/"
+
+formatStatement(n,l,c) ::= "/*C Translator won't translate I/O<\n><l> format<n><\n>*/<c>"
+
+statementFunctionStatement(n) ::= "/*let <n>*/"
+
+functionReference(f1,f2) ::= "<f1><f2>"
+
+functionArgumentList(f) ::= "(<f; separator=\",\">)"
+
+functionArgument(e) ::= "<e>"
+
+callStatement(s) ::= "<s>"
+
+subroutineCall(n,c) ::= "<n>(<c>);"
+
+callArgumentList(cv) ::=  "<cv;separator=\",\">"
+
+callArgument(e) ::= "<e>"
+
+returnStatement(i) ::= "return <if(!i)>0<else><i><endif>;"
+
+expressionuac(uac) ::= "<uac>"
+
+expressionvr(vr) ::= "<vr>"
+
+expressionfunc(f) ::= "<f>"
+
+expression(op,e1,e2) ::= "(<e1> <op> <e2>)"
+
+madd(op,e1,e2,e3) ::= "((<e1> * <e2>) <op> <e3>)"
+
+msub(op,e1,e2,e3) ::= "((<e1> * <e2>) <op> <e3>)"
+
+negvar(e1) ::="(-<e1>)"
+
+arrayElementName(n,iv) ::= "<n>(<iv;separator=\",\">)"
+
+subscripts(ev) ::= "[<ev>]"
+
+varRef(dref,n,s) ::= "<dref><n><s>"
+
+arrayName(n) ::= "<n>"
+
+subroutineName(n) ::= "<n>"
+
+functionName(n) ::= "<n>"
+
+unsignedArithmeticConstant(u) ::= "<u>"
+
+logicalConstant(l) ::= "<l>"
+
+identifier(i) ::= "<i>"
+
+directives(d,n) ::= "/*Translator won't translate the directives!<\n><d> <n;separator=\" \"><\n>*/<\n>"
+
+stringconstant(s) ::= "<s>"

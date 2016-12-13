@@ -1,0 +1,42 @@
+==--------==
+Installation
+==--------==
+Requirements:
+ GNU Make, preferrably v3.81
+    CFDbuilder requires GNU make (https://www.gnu.org/software/make/)
+    to build. It may work with other make systems, but it has been
+    tested with GNU Make 3.81.
+
+After gmake is installed,
+1) Download the following libraries and place them in the "lib" folder:
+       antlr-3.3-complete.jar
+       appFramework-1.0.jar
+       jnlp.jar
+2) cd src
+3) make package
+
+cfdbuilder.jar will be built and placed at the top level directory (one
+directory above source).
+
+==-==
+Usage
+==-==
+Requirements:
+  Intel Fortran Compiler or GNU Fortran compiler
+    You need a Fortran compiler to actually use CFDbuilder. It has not
+  been tested with other Fortran compilers, and at the moment, it has 
+  been hard-coded to look for either the Intel compiler or the GNU 
+  compiler. 
+
+You can run it on any input source file,
+   cd ../input
+   java -jar ../cfdbuilder.jar -pipeline <sourcefile.F>
+
+The optimized output will be called output_pipelined.f.
+
+During development you do not have to generate a new package (jar)
+everytime. You can rebuild and run using,
+   cd src
+   make
+   cd ../input
+   java -cp ../bin;../lib/antlr-3.3-complete.jar translator.Translator -pipeline <sourcefile.F>
