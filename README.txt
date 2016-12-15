@@ -23,9 +23,9 @@ based approach leverages domain experts’ knowledge about the code, and
 eliminates the need for complex analysis before program transformations.
 We demonstrated the effectiveness of this approach using three different
 applications on two different architectures and two different compilers.
-We see up to 6.92performance improvement using such an approach[1]. We believe
-such an approach could enable library and application writers to build
-efficient CFD libraries.
+We see up to 6.92xperformance improvement using such an approach [1].
+We believe such an approach could enable library and application writers
+to build efficient CFD libraries.
 
 Please refer to INSTALL.txt for instructions to build and run CFDbuilder.
 This document contains the input *restrictions* for CFDbuilder and the
