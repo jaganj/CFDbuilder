@@ -1,4 +1,33 @@
-﻿Please refer to INSTALL.txt for instructions to build and run CFDbuilder.
+﻿Computational Fluid Dynamics is an important area in scientific computing.
+The weak scaling of codes is well understood with about two decades of
+experiences using MPI. As a result, per-node performance has become very
+crucial to the overall machine performance. However, despite the use of
+multi-threading, obtaining good performance at each core is still extremely
+challenging. The challenges are primarily due to memory bandwidth limitations
+and difficulties in using short SIMD engines effectively. This work is about
+the techniques and a tool to improve in-core performance. Fundamental to the
+strategy is a hierarchical data layout made of small cubical structures of
+the problem states that can fit well in the cache hierarchy. The difficulties
+in computing the spatial derivatives (also called nearneighbor computation
+in the literature) in a hierarchical data layout are well known, hence, such
+a data layout has rarely been used in finite difference codes. We can program
+the hierarchical data layout in a relatively simple way at the cost of
+overheads.
+
+The key technique to eliminate the overheads is called pipeline-for-reuse.
+It is followed by a storage optimization called maximal array contraction.
+Both pipeline-for-reuse and maximal array contraction are highly tedious and
+error-prone. Therefore, we built a source-to-source translator called 
+CFD Builder to automate the transformations using directives. The directive
+based approach leverages domain experts’ knowledge about the code, and
+eliminates the need for complex analysis before program transformations.
+We demonstrated the effectiveness of this approach using three different
+applications on two different architectures and two different compilers.
+We see up to 6.92performance improvement using such an approach[1]. We believe
+such an approach could enable library and application writers to build
+efficient CFD libraries.
+
+Please refer to INSTALL.txt for instructions to build and run CFDbuilder.
 This document contains the input *restrictions* for CFDbuilder and the
 supported directives. Please refer to [1], [2], [3], [4], and [5] for
 more on CFDbuilder, pipelining, and each of the directives below.
